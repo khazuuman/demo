@@ -1,0 +1,13 @@
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/healthyshop
+
+jwt:
+  signerKey: "45a539b9c3a67676530aa6dbaf8f8e35630bc44f5331e2371e49b085578fb843adab17880307446a60177ede81b6abafc9ae2b270f20b52837fd7abdaed3bb77"
+  refresh-duration: 30 # second
+  valid-duration: 1 # day
+
+file:
+  upload-dir: "src/main/resources/images"
