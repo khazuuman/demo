@@ -23,9 +23,11 @@ import java.util.Arrays;
 @EnableWebMvc
 public class SecurityConfig {
 
-    private final String[] PUBLIC_GET_API = {"/v1/api/order/**","/v1/api/cart", "/v1/api/product/**","/v1/api/get_admin", "/images/**", "/v1/api/banner", "/v1/api/product" ,"/v1/api/area", "/v1/api/category", "/v1/api/branch"};
-    private final String[] PUBLIC_POST_API = {"/v1/api/login", "/v1/api/add-to-cart", "/v1/api/create-order"};
-    private final String[] PUBLIC_DELETE_API = {"v1/api/delete-to-cart/**"};
+    private final String[] PUBLIC_GET_API = {"/v1/api/figures","/v1/api/order/**","/v1/api/cart", "/v1/api/product/**","/v1/api/get_admin", "/images/**", "/v1/api/banner", "/v1/api/product" ,"/v1/api/area", "/v1/api/category", "/v1/api/branch"};
+    private final String[] PUBLIC_POST_API = {"/v1/api/login", "/v1/api/add-to-cart", "/v1/api/create-order","/v1/api/banner", "/v1/api/product/**"};
+    private final String[] PUBLIC_DELETE_API = {"v1/api/delete-to-cart/**","/v1/api/product/**"};
+
+    private final String[] PUBLIC_PUT_API = {"/v1/api/order/**","/v1/api/product/**"};
 
     private final UserAuthenticationEntryPoint userAuthenticationEntryPoint;
     private final UserAuthenticationProvider userAuthenticationProvider;
@@ -41,6 +43,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, PUBLIC_POST_API).permitAll()
                         .requestMatchers(HttpMethod.GET, PUBLIC_GET_API).permitAll()
                         .requestMatchers(HttpMethod.DELETE, PUBLIC_DELETE_API).permitAll()
+                        .requestMatchers(HttpMethod.PUT, PUBLIC_PUT_API).permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(new JwtAuthFilter(userAuthenticationProvider), BasicAuthenticationFilter.class)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()));
