@@ -62,7 +62,7 @@ public class OrderService {
             }
         }
 
-        Sort sort = Sort.by(Sort.Direction.DESC, "updated_at");
+        Sort sort = Sort.by(Sort.Direction.DESC, "updatedAt");
         PageRequest pageRequest = PageRequest.of(pageNumber - 1, 10, sort);
 
         Page<OrderSingleResponse> orderPage;

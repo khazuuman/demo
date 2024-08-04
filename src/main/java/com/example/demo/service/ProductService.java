@@ -65,7 +65,7 @@ public class ProductService {
 
         Criteria criteria = new Criteria();
         if (search != null && !search.isEmpty()) {
-            criteria.and("name").regex(search, "i");
+            criteria.and("slug").regex(areaService.formatSlug(search), "i");
         }
         if (area != null && !area.isEmpty()) {
             try {

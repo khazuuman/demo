@@ -11,6 +11,6 @@ public interface BranchRepository extends MongoRepository<Branch, String> {
 
     Page<Branch> findAllBy(Pageable pageable);
 
-    Page<Branch> findAllByManagerContainingIgnoreCase(String name, Pageable pageable);
+    Page<Branch> findAllBySlugContainingIgnoreCase(String name, Pageable pageable);
 
 }

@@ -17,6 +17,8 @@ public interface OrderMapper {
     @Mapping(target = "products", ignore = true)
     Order toOrder(OrderCreateRequest request);
 
+    @Mapping(target = "created_at", source = "createdAt")
+    @Mapping(target = "updated_at", source = "updatedAt")
     @Mapping(target = "_id", source = "id")
     OrderSingleResponse toOrderSingleResponse (Order order);
 

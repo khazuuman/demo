@@ -51,7 +51,7 @@ public class BranchService {
         PageRequest pageRequest = PageRequest.of(pageNumber - 1, 10, sort);
 
         // Lấy dữ liệu với phân trang và sắp xếp
-        Page<Branch> branchPage = branchRepository.findAllByManagerContainingIgnoreCase(search, pageRequest);
+        Page<Branch> branchPage = branchRepository.findAllBySlugContainingIgnoreCase(areaService.formatSlug(search), pageRequest);
 
         // Chuyển đổi Page<Branch> thành List<BranchResponse>
         List<BranchSingleResponse> branchResponses = branchPage.getContent().stream()
