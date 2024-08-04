@@ -55,7 +55,7 @@ public class OrderController {
     }
 
     @PutMapping("/v1/api/order/{id}")
-    public Errors updateOrder(@PathVariable("id") String id,@RequestParam String status) {
+    public Errors updateOrder(@PathVariable("id") String id,@RequestBody String status) {
         orderService.updateOrder(id, status);
         return Errors.builder()
                 .message("Cập nhật trạng thái đơn hàng thành công")

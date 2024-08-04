@@ -30,7 +30,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             "/v1/api/add-to-cart",
             "/v1/api/cart",
             "/v1/api/create-order",
-            "/v1/api/order/"
+            "/v1/api/order/",
+            "/v1/api/figures"
     );
 
     @Override
@@ -42,7 +43,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
         String requestURI = request.getRequestURI();
 
-        if (EXCLUDED_PATHS.contains(requestURI) || requestURI.startsWith("/v1/api/order/") || requestURI.startsWith("/v1/api/delete-to-cart/") || requestURI.startsWith("/images/") || requestURI.startsWith("/v1/api/product/")) {
+        if (EXCLUDED_PATHS.contains(requestURI)
+                || requestURI.startsWith("/v1/api/order/")
+                || requestURI.startsWith("/v1/api/delete-to-cart/")
+                || requestURI.startsWith("/images/")
+                || requestURI.startsWith("/v1/api/category")
+                || requestURI.startsWith("/v1/api/branch/")
+                || requestURI.startsWith("/v1/api/product/")) {
             chain.doFilter(request, response);
             return;
         }

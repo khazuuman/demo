@@ -10,18 +10,18 @@ import java.util.List;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class FigureResponse {
+public class FiguresResponse {
 
-    int totalOrders;
-    int pendingOrders;
-    int deliveringOrders;
-    int deliveredOrders;
-    int receivedOrders;
-    int cancelOrders;
-    int todayOrders;
-    int yesterdayOrders;
-    int thisMonthOrders;
-    int lastMonthOrders;
+    Long totalOrders;
+    Long pendingOrders;
+    Long deliveringOrders;
+    Long deliveredOrders;
+    Long receivedOrders;
+    Long cancelOrders;
+    Long todayOrders;
+    Long yesterdayOrders;
+    Long thisMonthOrders;
+    Long lastMonthOrders;
     List<WeeklyOrders> weeklyOrders;
     List<BestSellingProducts> bestSellingProducts;
 

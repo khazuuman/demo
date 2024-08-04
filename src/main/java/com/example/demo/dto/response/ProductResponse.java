@@ -6,6 +6,7 @@ import com.example.demo.model.Image;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.bson.types.ObjectId;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.math.BigDecimal;
 import java.util.Date;

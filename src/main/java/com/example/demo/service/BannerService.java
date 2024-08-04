@@ -36,7 +36,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
-@Component
 public class BannerService {
 
     BannerRepository bannerRepository;
@@ -70,7 +69,9 @@ public class BannerService {
         String bannerName = banner.getImage().getName();
         banner.setUpdated_at(new Date());
         banner.setUrl(url);
-        if (file != null || !file.isEmpty()) {
+        System.out.println(file);
+        if (file != null && !file.isEmpty()) {
+            System.out.println(file);
             log.warn(oldImageUrl);
             if (oldImageUrl != null && !oldImageUrl.isEmpty()) {
                 deleteFile(bannerName);

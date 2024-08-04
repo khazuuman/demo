@@ -22,26 +22,37 @@ public class ProductRequest {
 
     @NotBlank(message = "PRODUCT_NAME_BLANK")
     String name;
+
     @NotBlank(message = "MANUFACTURE_NAME_BLANK")
     String manufacture;
+
     @NotBlank(message = "INGREDIENT_NAME_BLANK")
     String ingredient;
-    List<String> uses;
-    List<String> manual;
+
+    String uses;
+
+    String manual;
+
     String warning;
-    List<String> storage_instructions;
+
+    String storage_instructions;
+
     @NotBlank(message = "EXPIRY_NAME_BLANK")
     String expiry;
+
     @Positive(message = "PRICE_INVALID")
     int price;
+
     @Positive(message = "QUANTITY_INVALID")
     int quantity;
+
     @Nullable
-    ObjectId area;
+    String area;
+
     @Nullable
-    ObjectId category;
+    String category;
+
     @NotBlank(message = "STATUS_BLANK")
     @StatusValidate(message = "STATUS_INVALID")
     String status;
-
 }

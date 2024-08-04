@@ -22,7 +22,7 @@ public class GetOrderDetail {
     String address;
     int price;
     String previewPrice;
-    List<Product> products;
+    List<ProductOrderItem> products;
     Date created_at;
     Date updated_at;
 

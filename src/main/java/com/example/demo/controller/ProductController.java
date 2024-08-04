@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.request.ProductRequest;
 import com.example.demo.dto.request.ProductUpdateRequest;
+import com.example.demo.dto.request.UpdateImageProduct;
 import com.example.demo.dto.response.ProductResponse;
 import com.example.demo.dto.response.ProductResponsePage;
 import com.example.demo.exception.Errors;
@@ -65,9 +66,11 @@ public class ProductController {
     public Errors updateProduct(
             @PathVariable("id") String id,
             @RequestParam(required = false) List<MultipartFile> images,
-            @ModelAttribute ProductUpdateRequest request
+            @ModelAttribute ProductUpdateRequest request,
+            @RequestParam String oldImages,
+            @RequestParam String editImages
     ) throws IOException {
-        productService.updateProduct(id, request, images);
+        productService.updateProduct(id, request, images, oldImages, editImages);
         return Errors.builder()
                 .message("Cập nhật sản phẩm thành công!")
                 .build();

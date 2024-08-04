@@ -48,8 +48,8 @@ public class BannerController {
             @PathVariable("id") String id,
             @RequestParam String url,
             @RequestParam String oldImageUrl,
-            @RequestParam(value = "file",required = false) MultipartFile file) throws IOException {
-        bannerService.updateBanner(id, url, oldImageUrl, file);
+            @RequestParam(required = false) MultipartFile image) throws IOException {
+        bannerService.updateBanner(id, url, oldImageUrl, image);
         return Errors.builder()
                 .message("Cập nhật banner thành công")
                 .build();

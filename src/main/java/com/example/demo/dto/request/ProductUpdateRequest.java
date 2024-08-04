@@ -32,8 +32,8 @@ public class ProductUpdateRequest {
     @Positive(message = "QUANTITY_INVALID")
     int quantity;
     int availableQuantity;
-    ObjectId area;
-    ObjectId category;
+    String area;
+    String category;
     @NotBlank(message = "STATUS_BLANK")
     @StatusValidate(message = "STATUS_INVALID")
     String status;

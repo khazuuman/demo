@@ -20,10 +20,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1/api")
@@ -37,19 +36,16 @@ public class CartController {
 
     @GetMapping("/cart")
     public ResponseEntity<?> getCart(HttpServletRequest request) {
-        // Lấy cookies từ request
         Cookie[] cookies = request.getCookies();
         if (cookies == null) {
             return ResponseEntity.ok("Giỏ hàng rỗng");
         }
 
-        // Tìm cookie với tên "cart"
         Cookie cartCookie = findCookieByName(cookies, "cart");
         if (cartCookie == null) {
             return ResponseEntity.ok("Giỏ hàng rỗng");
         }
 
-        // Đọc giá trị cookie
         String encodedCartJson = cartCookie.getValue();
         String cartJsonDecoded;
         try {
@@ -77,16 +73,14 @@ public class CartController {
                 return ResponseEntity.badRequest().body(Errors.builder().message("Số lượng thêm vào không thể nhiều hơn số lượng có sẵn!").build());
             }
 
-            // Xử lý cookie giỏ hàng
             Cookie[] cookies = request.getCookies();
             Cookie cartCookie = findCookieByName(cookies, "cart");
 
             List<ProductCart> cartItems;
             if (cartCookie == null) {
-                // Tạo mới cookie nếu không có
-                cartItems = Arrays.asList(productCart);
+                cartItems = new ArrayList<>();
+                cartItems.add(productCart);
             } else {
-                // Cập nhật cookie nếu đã có
                 String encodedCartJson = cartCookie.getValue();
                 String cartJsonDecoded = new String(Base64.getDecoder().decode(encodedCartJson));
                 cartItems = objectMapper.readValue(cartJsonDecoded, new TypeReference<>() {});
@@ -105,16 +99,16 @@ public class CartController {
                 }
             }
 
-            // Cập nhật giá trị cookie
             String cartJson = objectMapper.writeValueAsString(cartItems);
             String encodedCartJson = Base64.getEncoder().encodeToString(cartJson.getBytes());
+
             if (cartCookie == null) {
                 cartCookie = new Cookie("cart", encodedCartJson);
-                cartCookie.setMaxAge(30 * 60); // Thời gian sống cookie 30 phút
-                cartCookie.setPath("/"); // Đảm bảo cookie được gửi từ toàn bộ ứng dụng
             } else {
                 cartCookie.setValue(encodedCartJson);
             }
+            cartCookie.setMaxAge(30 * 60); // Thời gian sống cookie 30 phút
+            cartCookie.setPath("/"); // Đảm bảo cookie được gửi từ toàn bộ ứng dụng
             response.addCookie(cartCookie);
 
             return ResponseEntity.ok(Errors.builder().message("Đã thêm sản phẩm vào giỏ hàng!").build());
@@ -139,22 +133,23 @@ public class CartController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Errors.builder().message("Giỏ hàng không tồn tại").build());
             }
 
-            // Giải mã giá trị cookie
             String encodedCartJson = cartCookie.getValue();
             String cartJsonDecoded = new String(Base64.getDecoder().decode(encodedCartJson));
+
             List<ProductCart> cartItems = objectMapper.readValue(cartJsonDecoded, new TypeReference<>() {});
+            System.out.println("list before delete " + cartItems.size());
 
             boolean removed = cartItems.removeIf(p -> p.getProduct().get_id().equals(id));
-
+            System.out.println("list after delete " + cartItems.size());
             if (!removed) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Errors.builder().message("Sản phẩm không tìm thấy trong giỏ hàng").build());
             }
 
-            // Cập nhật cookie
             String updatedCartJson = objectMapper.writeValueAsString(cartItems);
             String encodedUpdatedCartJson = Base64.getEncoder().encodeToString(updatedCartJson.getBytes());
             cartCookie.setValue(encodedUpdatedCartJson);
             cartCookie.setPath("/"); // Đảm bảo path của cookie chính xác
+            cartCookie.setMaxAge(7 * 24 * 60 * 60); // Thiết lập thời hạn cookie là 7 ngày
             response.addCookie(cartCookie);
 
             return ResponseEntity.ok(Errors.builder().message("Đã xóa sản phẩm ra khỏi giỏ hàng!").build());

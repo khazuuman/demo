@@ -4,14 +4,12 @@ import com.example.demo.dto.request.OrderCreateRequest;
 import com.example.demo.dto.request.OrderItemRequest;
 import com.example.demo.dto.request.ProductCart;
 import com.example.demo.dto.request.ProductCartInner;
-import com.example.demo.dto.response.GetOrderDetail;
-import com.example.demo.dto.response.OrderResponse;
-import com.example.demo.dto.response.OrderResponseDetail;
-import com.example.demo.dto.response.OrderSingleResponse;
+import com.example.demo.dto.response.*;
 import com.example.demo.enums.OrderStatusEnums;
 import com.example.demo.exception.AppException;
 import com.example.demo.exception.ErrorCode;
 import com.example.demo.mapper.OrderMapper;
+import com.example.demo.mapper.ProductMapper;
 import com.example.demo.model.Order;
 import com.example.demo.model.Product;
 import com.example.demo.model.ProductItem;
@@ -26,6 +24,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -46,6 +45,8 @@ public class OrderService {
     OrderRepository orderRepository;
 
     OrderMapper orderMapper;
+
+    ProductMapper productMapper;
 
     ProductRepository productRepository;
 
@@ -80,16 +81,19 @@ public class OrderService {
 
     public GetOrderDetail getOrderDetails(String id) {
         var order = orderRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_EXIST));
-        List<ProductItem> productIds = order.getProducts();
-        List<Product> products = new ArrayList<>();
-        for (ProductItem p : productIds) {
+        List<ProductItem> productItems = order.getProducts();
+        List<ProductOrderItem> productOrderItems = new ArrayList<>();
+        for (ProductItem p : productItems) {
             var product = productRepository.findById(p.getProduct()).get();
-            products.add(product);
+            ProductOrderItem productOrderItem = ProductOrderItem.builder()
+                    .product(productMapper.toProductSingleOfOrderDetail(product))
+                    .quantity(p.getQuantity())
+                    .build();
+            productOrderItems.add(productOrderItem);
         }
-
-        return GetOrderDetail.builder()
-                .products(products)
-                .build();
+        GetOrderDetail getOrderDetail = orderMapper.toGetOrderDetail(order);
+        getOrderDetail.setProducts(productOrderItems);
+        return getOrderDetail;
     }
 
     public void createOrder(OrderCreateRequest requestOrder) throws Exception {
@@ -124,13 +128,12 @@ public class OrderService {
             }
 
             var order = orderMapper.toOrder(requestOrder);
-            order.setCreated_at(new Date());
-            order.setUpdated_at(new Date());
+            order.setCreatedAt(new Date());
+            order.setUpdatedAt(new Date());
             order.setProducts(products);
             order.setPrice(totalPrice);
             order.setStatus("chờ");
             order.setPreviewPrice(productService.formatPrice(totalPrice));
-
 
 
             orderRepository.insert(order);
@@ -140,17 +143,21 @@ public class OrderService {
 
     }
 
-    public void updateOrder(String id, String status) {
+    public void updateOrder(String id, String statusJson) {
         var order = orderRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_EXIST));
+        System.out.println(order);
+
+        JSONObject jsonObject = new JSONObject(statusJson);
+        String status = jsonObject.getString("status");
         var oldStatus = order.getStatus();
 
+        System.out.println(status);
         System.out.println(oldStatus);
 
         int oldStatusTh = valueOfPriority(oldStatus);
+        System.out.println("oldStatusTh" + oldStatusTh);
         int newStatusTh = valueOfPriority(status);
-
-        System.out.println(oldStatusTh);
-        System.out.println(newStatusTh);
+        System.out.println("newStatusTh" + newStatusTh);
 
         if (oldStatusTh == 1 && oldStatusTh < newStatusTh) {
             throw new AppException(ErrorCode.CANNOT_CANCEL);
